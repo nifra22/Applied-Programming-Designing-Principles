@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 import pandas as pd
+from process import ImportFactory
 
-# Strategy classes
+# Strategy classes 
 class AnalysisStrategy(ABC):
     @abstractmethod
     def analyze(self, data):
@@ -55,3 +56,39 @@ class SalesAnalyzer:
 
     def analyze(self, data):
         return self._strategy.analyze(data)
+
+# Sample data
+data = pd.DataFrame({
+    'Invoice date': ['2024-01-01', '2024-01-02', '2024-01-03', '2024-02-01', '2024-02-02', '2024-03-01'],
+    'Region': ['North', 'South', 'East', 'West', 'North', 'East'],
+    'Product': ['A', 'B', 'A', 'C', 'B', 'A'],
+    'Unit sold': [10, 15, 10, 5, 20, 30],
+    'Total sales': [100, 150, 100, 50, 200, 300],
+    'Sales Method': ['Online', 'Offline', 'Online', 'Offline', 'Online', 'Offline']
+})
+
+# Create instances of the strategies
+total_sales_by_region_strategy = TotalSalesByRegion(sort_order=['North', 'South', 'East', 'West'])
+best_selling_product_strategy = BestSellingProduct()
+total_sales_strategy = TotalSales(period='M')
+sales_method_each_month_strategy = SalesMethodEachMonth()
+
+# Create the SalesAnalyzer with a specific strategy
+analyzer = SalesAnalyzer(total_sales_by_region_strategy)
+print("Total Sales by Region:")
+print(analyzer.analyze(data))
+
+# Change the strategy to BestSellingProduct
+analyzer.set_strategy(best_selling_product_strategy)
+print("\nBest Selling Product:")
+print(analyzer.analyze(data))
+
+# Change the strategy to TotalSales with monthly period
+analyzer.set_strategy(total_sales_strategy)
+print("\nTotal Sales per Month:")
+print(analyzer.analyze(data))
+
+# Change the strategy to SalesMethodEachMonth
+analyzer.set_strategy(sales_method_each_month_strategy)
+print("\nSales Method Each Month:")
+print(analyzer.analyze(data))

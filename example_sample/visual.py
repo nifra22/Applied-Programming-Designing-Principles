@@ -1,11 +1,13 @@
 import dash
-from dash import dcc, html  # Updated import statements
+from dash import dcc, html
 from dash.dependencies import Input, Output
 import plotly.express as px
-import dash_bootstrap_components as dbc  # Import dbc
+import dash_bootstrap_components as dbc
 
 from inject import SalesAnalyzer, TotalSalesByRegion, BestSellingProduct, TotalSales, SalesMethodEachMonth
 from process import import_data, CsvImportFactory
+
+from inject import AnalysisStrategy
 
 # Load data
 csv_factory = CsvImportFactory()
@@ -37,9 +39,8 @@ app.layout = html.Div([
 ])
 
 @app.callback(
-    Output('analysis-graph', 'figure'),
-    Output('additional-controls', 'children'),
-    Input('analysis-dropdown', 'value')
+    [Output('analysis-graph', 'figure'), Output('additional-controls', 'children')],
+    [Input('analysis-dropdown', 'value')]
 )
 def update_graph(selected_analysis):
     analyzer = SalesAnalyzer(TotalSalesByRegion(['Northeast', 'South', 'West', 'Midwest', 'Southeast']))
