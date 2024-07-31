@@ -3,10 +3,8 @@ from dash import dcc, html
 from dash.dependencies import Input, Output
 import plotly.express as px
 import dash_bootstrap_components as dbc
-
 from inject import SalesAnalyzer, TotalSalesByRegion, BestSellingProduct, TotalSales, SalesMethodEachMonth
 from process import import_data, CsvImportFactory
-
 from inject import AnalysisStrategy
 
 # Load data
@@ -70,6 +68,28 @@ def update_graph(selected_analysis):
         analyzer.set_strategy(SalesMethodEachMonth())
         data = analyzer.analyze(csv_data)
         fig = px.line(data, x='Invoice date', y='Total sales', color='Sales Method', title='Sales Method Each Month')
+
+    # Adjust layout for better visualization
+    fig.update_layout(
+        margin=dict(l=20, r=20, t=50, b=50),
+        height=600,
+        width=1000,
+        title_x=0.5,
+        yaxis_title="Total Sales",
+        xaxis_title="Date"
+    )
+
+    fig.update_yaxes(
+        automargin=True,
+        title_text="Total Sales",
+        title_standoff=25,
+        showticklabels=False
+    )
+
+    fig.update_xaxes(
+        automargin=True,
+        title_standoff=25
+    )
 
     return fig, additional_controls
 
